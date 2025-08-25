@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sita — App de gymkanas</title>
+  <meta name="description" content="Sita es una app móvil para crear y jugar gymkanas en tu ciudad, tu cole o con tus amigos. Explora, resuelve retos y compite." />
+  <meta name="theme-color" content="#6c47ff" />
+
+  <!-- Fuente moderna y accesible -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #111218;
+      --text: #e8e8ff;
+      --muted: #b6b6d8;
+      --brand: #7c4dff; /* violeta */
+      --brand-2: #ff4dd2; /* magenta */
+      --ok: #28c76f;
+      --warn: #ff9f43;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #fafafa;
+        --panel: #ffffff;
+        --text: #101012;
+        --muted: #5a5a72;
+        --shadow: 0 12px 28px rgba(20,20,40,.08);
+      }
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 500px at 80% -10%, rgba(124,77,255,.15), transparent 70%),
+                  radial-gradient(900px 400px at -10% 10%, rgba(255,77,210,.12), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+    a { color: inherit }
+    .container { width: min(1100px, 92%); margin-inline: auto }
+    .btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: .9rem 1.2rem; font-weight: 600; border-radius: calc(var(--radius) - 6px);
+      border: 1px solid transparent; text-decoration: none; transition: transform .15s ease, filter .15s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.05) }
+    .btn:active { transform: translateY(0) }
+    .btn-primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; box-shadow: var(--shadow) }
+    .btn-ghost { background: transparent; border-color: rgba(255,255,255,.18); color: var(--text) }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(16,16,24,.45); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    @media (prefers-color-scheme: light) {
+      nav { background: rgba(255,255,255,.6); border-bottom-color: rgba(20,20,40,.06) }
+    }
+    .nav-wrap { display: flex; align-items: center; justify-content: space-between; padding: .8rem 0 }
+    .brand { display: flex; align-items: center; gap: .7rem; font-weight: 800; letter-spacing: .3px }
+    .brand .logo { width: 36px; height: 36px; border-radius: 12px; background: conic-gradient(from 180deg at 50% 50%, var(--brand), var(--brand-2), var(--brand)); box-shadow: 0 6px 18px rgba(124,77,255,.35) }
+    .menu { display: flex; gap: 1rem; align-items: center }
+    .menu a { padding: .6rem .8rem; border-radius: 10px; font-weight: 500; color: var(--muted); text-decoration: none }
+    .menu a:hover { color: var(--text); background: rgba(255,255,255,.06) }
+    .menu-toggle { display: none }
+    @media (max-width: 860px) {
+      .menu { display: none }
+      .menu-toggle { display: inline-flex }
+      .mobile-menu { display: none; flex-direction: column; gap: .4rem; padding: .6rem }
+      .mobile-menu a { padding: .9rem; border-radius: 12px; background: var(--panel); color: var(--text); text-decoration: none }
+      .mobile-menu.open { display: flex }
+    }
+
+    /* HERO */
+    .hero { padding: clamp(3rem, 6vw, 6rem) 0 3rem }
+    .hero-wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center }
+    .eyebrow { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-size: .82rem }
+    h1 { font-size: clamp(2.1rem, 4.5vw, 3.8rem); line-height: 1.08; margin: .6rem 0 1rem }
+    .lead { font-size: clamp(1rem, 2.1vw, 1.25rem); color: var(--muted); margin-bottom: 1.4rem }
+    .cta { display: flex; gap: .8rem; flex-wrap: wrap }
+
+    .phone {
+      width: min(380px, 90%); height: 720px; border-radius: 36px; margin: 1rem auto 0; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.08);
+      background: linear-gradient(180deg, #0f1020, #15162a);
+      border: 6px solid #1f2036;
+    }
+    .phone:before { content: ""; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 35%; height: 8px; background: #0a0b14; border-radius: 4px }
+    .screen { position: absolute; inset: 16px; border-radius: 28px; background: linear-gradient(140deg, rgba(124,77,255,.22), rgba(255,77,210,.2) 40%, rgba(15,16,32,1) 60%);
+      overflow: hidden }
+    .badge { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #fff; padding: .4rem .6rem; border-radius: 999px; font-size: .78rem; font-weight: 700 }
+    .card-list { position: absolute; bottom: 0; left: 0; right: 0; padding: 22px; display: grid; gap: 12px }
+    .mini-card { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(6px); border-radius: 16px; padding: 14px; display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: center }
+    .mini-card .dot { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--brand), var(--brand-2)) }
+    .mini-card h4 { margin: 0; font-size: .98rem }
+    .mini-card p { margin: 4px 0 0; font-size: .8rem; color: #e1defa }
+
+    @media (max-width: 980px) {
+      .hero-wrap { grid-template-columns: 1fr; text-align: center }
+      .cta { justify-content: center }
+    }
+
+    /* FEATURES */
+    .section { padding: 3.5rem 0 }
+    .section h2 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); margin: 0 0 1rem }
+    .kicker { color: var(--muted); margin-top: 0; margin-bottom: 2rem }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem }
+    .card { background: var(--panel); border: 1px solid rgba(255,255,255,.08); padding: 1.2rem; border-radius: var(--radius); box-shadow: var(--shadow) }
+    .icon {
+      width: 44px; height: 44px; border-radius: 12px; display: inline-grid; place-items: center; margin-bottom: .6rem;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+    .card h3 { margin: .3rem 0 .4rem; font-size: 1.15rem }
+    .card p { margin: 0; color: var(--muted) }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr } }
+
+    /* HOW IT WORKS */
+    .steps { counter-reset: step }
+    .step { display: grid; grid-template-columns: 64px 1fr; gap: 1rem; align-items: start; padding: 1rem; border-radius: var(--radius); background: var(--panel); border: 1px solid rgba(255,255,255,.08) }
+    .step + .step { margin-top: .8rem }
+    .num { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; font-weight: 800; background: linear-gradient(135deg, var(--brand), var(--brand-2)); }
+
+    /* CTA band */
+    .band { margin-top: 2rem; background: linear-gradient(135deg, rgba(124,77,255,.15), rgba(255,77,210,.12)); border: 1px solid rgba(255,255,255,.16);
+      border-radius: var(--radius); padding: 1.4rem; display: grid; gap: .8rem }
+
+    /* FAQ */
+    details { background: var(--panel); border-radius: var(--radius); border: 1px solid rgba(255,255,255,.08); padding: 1rem }
+    details + details { margin-top: .6rem }
+    summary { cursor: pointer; font-weight: 600 }
+    summary:focus { outline: 2px solid var(--brand) }
+
+    /* Footer */
+    footer { padding: 2.2rem 0; color: var(--muted) }
+    .social { display: flex; gap: .8rem }
+    .social a { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 12px; background: var(--panel); border: 1px solid rgba(255,255,255,.08); text-decoration: none }
+
+    /* helpers */
+    .center { text-align: center }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav aria-label="Barra de navegación">
+    <div class="container nav-wrap">
+      <a class="brand" href="#" aria-label="Inicio Sita">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Sita</span>
+      </a>
+      <div class="menu" role="menubar" aria-label="Menú principal">
+        <a role="menuitem" href="#caracteristicas">Características</a>
+        <a role="menuitem" href="#como">Cómo funciona</a>
+        <a role="menuitem" href="#comunidad">Comunidad</a>
+        <a role="menuitem" href="#faq">FAQ</a>
+      </div>
+      <button class="btn btn-primary menu-toggle" aria-expanded="false" aria-controls="mobile-menu">Descargar</button>
+    </div>
+    <div id="mobile-menu" class="container mobile-menu" aria-hidden="true">
+      <a href="#caracteristicas">Características</a>
+      <a href="#como">Cómo funciona</a>
+      <a href="#comunidad">Comunidad</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary" href="#descargas">Descargas</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container hero-wrap">
+      <div>
+        <p class="eyebrow">Juega. Explora. Compite.</p>
+        <h1>Crea y juega <span style="background:linear-gradient(135deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent">gymkanas</span> en cualquier lugar con Sita</h1>
+        <p class="lead">Sita es una app móvil para montar gymkanas interactivas con mapas, pistas y retos. Ideal para colegios, turismo, eventos y grupos de amigos.</p>
+        <div class="cta" id="descargas">
+          <a class="btn btn-primary" href="#" aria-label="Descargar en App Store (próximamente)">
+            <!-- Apple icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.42 2.2-1.2 3.04-.77.86-2.04 1.5-3.24 1.41-.14-1.09.44-2.24 1.16-3.01.78-.84 2.17-1.45 3.28-1.44zM20.68 17.39c-.6 1.38-.88 1.97-1.64 3.18-1.07 1.72-2.58 3.86-4.5 3.9-1.67.04-2.1-1.14-4.39-1.14-2.29 0-2.76 1.1-4.43 1.16-1.9.07-3.35-1.87-4.42-3.58-2.41-3.79-4.25-10.7-1.78-15.36 1.23-2.35 3.43-3.84 5.83-3.88 1.82-.03 3.53 1.25 4.39 1.25.86 0 3.03-1.54 5.12-1.31.87.04 3.32.35 4.89 2.64-.13.08-2.93 1.72-2.9 5.13.04 4.05 3.57 5.4 3.63 5.43z"/></svg>
+            App Store
+          </a>
+          <a class="btn btn-ghost" href="#" aria-label="Descargar en Google Play (próximamente)">
+            <!-- Play icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.2c-.37-.21-.82-.21-1.19 0-.37.21-.6.6-.6 1.03v17.54c0 .43.23.82.6 1.03.37.21.82.21 1.19 0l12.34-8.77c.33-.19.53-.54.53-.92s-.2-.73-.53-.92L3.6 2.2zM17.8 7.1l3.9-2.77c.37-.21.82-.21 1.19 0 .37.21.6.6.6 1.03v13.28c0 .43-.23.82-.6 1.03-.37.21-.82.21-1.19 0l-3.9-2.77"/></svg>
+            Google Play
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="phone" role="img" aria-label="Vista previa de la app Sita">
+          <div class="screen">
+            <span class="badge">Gymkana: Centro Histórico</span>
+            <div class="card-list">
+              <div class="mini-card" aria-label="Reto de búsqueda de pistas">
+                <div class="dot" aria-hidden="true"></div>
+                <div>
+                  <h4>Encuentra la fuente oculta</h4>
+                  <p>Usa el mapa y desbloquea la pista 2/5</p>
+                </div>
+                <span aria-hidden="true">➡️</span>
+              </div>
+              <div class="mini-card" aria-label="Reto de foto">
+                <div class="dot" aria-hidden="true"></div>
+                <div>
+                  <h4>Foto con la estatua</h4>
+                  <p>Sube una foto creativa del equipo</p>
+                </div>
+                <span aria-hidden="true">📸</span>
+              </div>
+              <div class="mini-card" aria-label="Reto de pregunta">
+                <div class="dot" aria-hidden="true"></div>
+                <div>
+                  <h4>Pregunta sorpresa</h4>
+                  <p>¿En qué año se inauguró el teatro?</p>
+                </div>
+                <span aria-hidden="true">❓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FEATURES -->
+  <section id="caracteristicas" class="section">
+    <div class="container">
+      <h2>Diseñada para divertirse y aprender</h2>
+      <p class="kicker">Todo lo que necesitas para crear experiencias memorables al aire libre o en interiores.</p>
+      <div class="grid" role="list">
+        <article class="card" role="listitem">
+          <span class="icon" aria-hidden="true">🗺️</span>
+          <h3>Mapas interactivos</h3>
+          <p>Ubica puntos de control, rutas y zonas de juego. Perfecto para turismo, campus y parques.</p>
+        </article>
+        <article class="card" role="listitem">
+          <span class="icon" aria-hidden="true">🧩</span>
+          <h3>Retos personalizables</h3>
+          <p>Combina preguntas, fotos, códigos QR, pistas temporizadas y más.</p>
+        </article>
+        <article class="card" role="listitem">
+          <span class="icon" aria-hidden="true">👥</span>
+          <h3>Equipos y ranking</h3>
+          <p>Forma equipos, mide tiempos y consulta el ranking en vivo.</p>
+        </article>
+        <article class="card" role="listitem">
+          <span class="icon" aria-hidden="true">⚡</span>
+          <h3>Modo offline</h3>
+          <p>Juega incluso con cobertura limitada. Sin pausas.</p>
+        </article>
+        <article class="card" role="listitem">
+          <span class="icon" aria-hidden="true">🛡️</span>
+          <h3>Control y seguridad</h3>
+          <p>Moderación de contenidos y privacidad de los jugadores.</p>
+        </article>
+        <article class="card" role="listitem">
+          <span class="icon" aria-hidden="true">🛠️</span>
+          <h3>Editor sencillo</h3>
+          <p>Crea gymkanas en minutos con plantillas y asistentes.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="como" class="section">
+    <div class="container">
+      <h2>¿Cómo funciona?</h2>
+      <p class="kicker">Tres pasos y listo para jugar.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div>
+            <h3>Crea tu gymkana</h3>
+            <p>Define el mapa, añade retos y personaliza reglas y tiempos. Puedes empezar desde una plantilla.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div>
+            <h3>Comparte el código</h3>
+            <p>Invita a tus jugadores con un enlace o código QR. Ellos se unen en segundos.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div>
+            <h3>Juega y compite</h3>
+            <p>Los equipos superan retos, suben pruebas y el ranking se actualiza en tiempo real.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="band" id="comunidad">
+        <h3 class="center">Únete a la comunidad Sita</h3>
+        <p class="center" style="margin:0">Recibe plantillas gratuitas de gymkanas y consejos de juego.</p>
+        <p class="center" style="margin: .6rem 0 0">
+          <a class="btn btn-primary" href="#" aria-label="Suscribirme a novedades">Quiero estar al día</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container">
+      <h2>Preguntas frecuentes</h2>
+      <details>
+        <summary>¿Sita es gratis?</summary>
+        <p>Sí, puedes crear y jugar gymkanas gratuitas. Más adelante ofreceremos planes Pro para eventos grandes y colegios.</p>
+      </details>
+      <details>
+        <summary>¿Necesito conexión a Internet?</summary>
+        <p>Sita funciona offline para jugar; sólo necesitas conexión al crear o sincronizar resultados.</p>
+      </details>
+      <details>
+        <summary>¿En qué dispositivos está disponible?</summary>
+        <p>iOS y Android (disponible próximamente). También habrá panel web para organizadores.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container" style="display:flex; gap:1rem; align-items:center; justify-content:space-between; flex-wrap:wrap">
+      <div>© <span id="year"></span> Sita · Hecho con ❤ para jugar</div>
+      <div class="social" aria-label="Redes sociales">
+        <a href="#" aria-label="Twitter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.27 4.27 0 0 0 1.88-2.35 8.6 8.6 0 0 1-2.71 1.04 4.26 4.26 0 0 0-7.28 3.88A12.1 12.1 0 0 1 3.16 4.9a4.25 4.25 0 0 0 1.32 5.69 4.2 4.2 0 0 1-1.93-.53v.05a4.26 4.26 0 0 0 3.41 4.17 4.3 4.3 0 0 1-1.92.07 4.26 4.26 0 0 0 3.98 2.96A8.54 8.54 0 0 1 2 19.54 12.08 12.08 0 0 0 8.29 21c7.55 0 11.68-6.26 11.68-11.68 0-.18 0-.36-.01-.54A8.35 8.35 0 0 0 22.46 6z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 .001 10.001A5 5 0 0 0 12 7zm6.5-.25a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+        </a>
+        <a href="#" aria-label="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.4 4.5 12 4.5 12 4.5s-7.4 0-9.4.6A3 3 0 0 0 .5 7.2C0 9.2 0 12 0 12s0 2.8.5 4.8a3 3 0 0 0 2.1 2.1c2 .6 9.4.6 9.4.6s7.4 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 14.8 24 12 24 12s0-2.8-.5-4.8zM9.6 15.5v-7l6.3 3.5-6.3 3.5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Año dinámico y menú mobile accesible
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const toggle = document.querySelector('.menu-toggle');
+    const mobile = document.getElementById('mobile-menu');
+    toggle.addEventListener('click', () => {
+      const open = mobile.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      mobile.setAttribute('aria-hidden', String(!open));
+    });
+  </script>
+</body>
+</html>
