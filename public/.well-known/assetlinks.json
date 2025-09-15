@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.sitaapp",
+      "sha256_cert_fingerprints": [
+        "74:7E:8E:5F:97:92:D6:96:28:12:B7:0B:72:62:9D:53:D3:9B:14:BE:1E:56:33:14:E7:DD:62:A2:B8:AB:63:0B",
+        "1B:FC:2D:37:DD:4B:E7:AE:63:6D:3F:B9:14:39:04:5F:2B:7C:45:2F:BB:98:FE:88:B0:D0:E9:82:7B:1B:FB:B2"
+      ]
+    }
+  }
+]
